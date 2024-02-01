@@ -15,8 +15,6 @@ exports.AdmissionInquiry = async (req, res) => {
     return `${day}/${month}/${year}: ${Hours}:${Minutes}:${Seconds}`; // Return the date string in "d/m/yyyy" format with Hour Minutes And Seconds
   }
 
-  const currentDate = new Date(); // Assuming today's date
-
   var currentTime = new Date();
 
   var currentOffset = currentTime.getTimezoneOffset();
@@ -52,27 +50,40 @@ exports.AdmissionInquiry = async (req, res) => {
   } = req.body;
 
   // Write vales in spreed sheets
-  await googleSheets.spreadsheets.values.append({
-    auth,
-    spreadsheetId,
-    range: "Admission Inquiry",
-    valueInputOption: "USER_ENTERED",
-    resource: {
-      values: [
-        [
-          formattedDate,
-          name.toUpperCase(),
-          email.toLowerCase(),
-          number,
-          category.toUpperCase(),
-          state.toUpperCase(),
-          city.toUpperCase(),
-          CourseAfterOption.toUpperCase(),
-          CoursesAfterSelected.toUpperCase(),
+  await googleSheets.spreadsheets.values
+    .append({
+      auth,
+      spreadsheetId,
+      range: "Admission Inquiry",
+      valueInputOption: "USER_ENTERED",
+      resource: {
+        values: [
+          [
+            formattedDate,
+            name.toUpperCase(),
+            email.toLowerCase(),
+            number,
+            category.toUpperCase(),
+            state.toUpperCase(),
+            city.toUpperCase(),
+            CourseAfterOption.toUpperCase(),
+            CoursesAfterSelected.toUpperCase(),
+          ],
         ],
-      ],
-    },
-  });
+      },
+    })
+    .then(() => {
+      res.json({
+        success: true,
+        message: "Form Submitted Successfully",
+      });
+    })
+    .catch((error) => {
+      res.json({
+        success: true,
+        error,
+      });
+    });
 
   // try {
   //   await sendEmail({ ...req.body });
@@ -83,6 +94,4 @@ exports.AdmissionInquiry = async (req, res) => {
   //     "There seems to be issue submitting your form please try letter or contact through phone or WhatsApp"
   //   );
   // }
-
-  res.send("ok");
 };
