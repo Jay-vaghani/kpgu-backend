@@ -16,7 +16,18 @@ exports.AdmissionInquiry = async (req, res) => {
   }
 
   const currentDate = new Date(); // Assuming today's date
-  const formattedDate = formatDateIndianStyle(currentDate);
+
+  var currentTime = new Date();
+
+  var currentOffset = currentTime.getTimezoneOffset();
+
+  var ISTOffset = 330; // IST offset UTC +5:30
+
+  var ISTTime = new Date(
+    currentTime.getTime() + (ISTOffset + currentOffset) * 60000
+  );
+
+  const formattedDate = formatDateIndianStyle(ISTTime);
 
   const auth = new google.auth.GoogleAuth({
     keyFile: "google-sheets-credentials.json",
@@ -63,13 +74,15 @@ exports.AdmissionInquiry = async (req, res) => {
     },
   });
 
-  try {
-    await sendEmail({ ...req.body });
-    return res.send("Form Submitted successfully we will contact you soon");
-  } catch (error) {
-    console.log(error);
-    return res.send(
-      "There seems to be issue submitting your form please try letter or contact through phone or WhatsApp"
-    );
-  }
+  // try {
+  //   await sendEmail({ ...req.body });
+  //   return res.send("Form Submitted successfully we will contact you soon");
+  // } catch (error) {
+  //   console.log(error);
+  //   return res.send(
+  //     "There seems to be issue submitting your form please try letter or contact through phone or WhatsApp"
+  //   );
+  // }
+
+  res.send("ok");
 };
