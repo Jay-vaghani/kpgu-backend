@@ -72,26 +72,22 @@ exports.AdmissionInquiry = async (req, res) => {
         ],
       },
     })
-    .then(() => {
-      res.json({
+    .then(async () => {
+      try {
+        await sendEmail({ ...req.body });
+      } catch (error) {
+        console.log(error);
+      }
+      return res.json({
         success: true,
         message: "Form Submitted Successfully",
       });
     })
     .catch((error) => {
       res.json({
-        success: true,
+        success: false,
         error,
+        message: "There Seems To be Some Problem Please Try Again Later",
       });
     });
-
-  // try {
-  //   await sendEmail({ ...req.body });
-  //   return res.send("Form Submitted successfully we will contact you soon");
-  // } catch (error) {
-  //   console.log(error);
-  //   return res.send(
-  //     "There seems to be issue submitting your form please try letter or contact through phone or WhatsApp"
-  //   );
-  // }
 };

@@ -1,9 +1,16 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const dotenv = require("dotenv").config({ path: "./config/config.env" });
 const studentRoutes = require("./routes/student.js");
 
-app.use(cors());
+
+app.use(
+  cors({
+    origin: process.env.ORIGIN_ALLOWED,
+    methods: "POST, GET",
+  })
+);
 app.use(express.json());
 
 app.get("/", (req, res) => {
